@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPlus Elevator - AI Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Page intro ── */
+        .robot-intro {
+            text-align: center;
+            margin: 1.5rem auto 0.5rem;
+            max-width: 700px;
+            padding: 0 1rem;
+        }
+        .robot-intro h2 {
+            color: #1E2A47;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .robot-intro p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* ── Main layout ── */
+        .robot-container {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 1.5rem auto 2rem;
+            align-items: flex-start;
+            padding: 0 1rem;
+        }
+
+        /* ── Robot model column ── */
+        .robot-model {
+            flex: 0 0 auto;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Head */
+        .robot-head {
+            width: 100px;
+            height: 90px;
+            background: linear-gradient(145deg, #1a3060, #1E2A47);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(58, 110, 165, 0.6),
+                        inset 0 0 10px rgba(0, 200, 255, 0.1);
+            animation: headBob 3s ease-in-out infinite;
+        }
+        /* Antenna stem */
+        .robot-head::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 20px;
+            background: #3A6EA5;
+        }
+        /* Antenna tip */
+        .robot-head::after {
+            content: '';
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #00e5ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+            animation: antennaPulse 1.5s ease-in-out infinite;
+        }
+
+        .robot-eyes {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 15px 0;
+        }
+        .robot-eye {
+            width: 22px;
+            height: 22px;
+            background: #00e5ff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #00e5ff, 0 0 25px rgba(0, 229, 255, 0.5);
+            animation: eyeBlink 4s ease-in-out infinite;
+        }
+
+        .robot-mouth {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 15px;
+            padding: 0 20px;
+        }
+        .robot-mouth-led {
+            width: 8px;
+            height: 6px;
+            background: #3A6EA5;
+            border-radius: 2px;
+            transition: background 0.15s, box-shadow 0.15s;
+        }
+        .robot-mouth-led.active {
+            background: #00e5ff;
+            box-shadow: 0 0 6px #00e5ff;
+        }
+
+        /* Neck */
+        .robot-neck {
+            width: 30px;
+            height: 15px;
+            background: #162038;
+            border-left: 3px solid #3A6EA5;
+            border-right: 3px solid #3A6EA5;
+        }
+
+        /* Torso row (arms + body) */
+        .robot-torso-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            animation: bodyFloat 3s ease-in-out infinite;
+        }
+
+        .robot-arm {
+            width: 22px;
+            height: 80px;
+            background: linear-gradient(180deg, #1E2A47, #162038);
+            border-radius: 8px;
+            border: 1.5px solid #3A6EA5;
+            box-shadow: 0 0 8px rgba(58, 110, 165, 0.3);
+            position: relative;
+        }
+        .robot-arm.left  { animation: armSwingLeft  3s ease-in-out infinite; transform-origin: top center; }
+        .robot-arm.right { animation: armSwingRight 3s ease-in-out infinite; transform-origin: top center; }
+        .robot-arm::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            background: #1E2A47;
+            border-radius: 50% 50% 40% 40%;
+            border: 1.5px solid #3A6EA5;
+        }
+
+        .robot-torso {
+            width: 110px;
+            height: 100px;
+            background: linear-gradient(145deg, #1a3060, #1E2A47);
+            border-radius: 12px;
+            border: 1.5px solid #3A6EA5;
+            box-shadow: 0 0 20px rgba(58, 110, 165, 0.4),
+                        inset 0 0 15px rgba(0, 200, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Chest display */
+        .robot-chest-display {
+            width: 70px;
+            height: 40px;
+            background: #0a1628;
+            border-radius: 6px;
+            border: 1px solid #3A6EA5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .chest-bar {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+        }
+        .chest-bar-item {
+            width: 6px;
+            background: #3A6EA5;
+            border-radius: 2px 2px 0 0;
+            animation: barPulse 1.5s ease-in-out infinite;
+        }
+        .chest-bar-item:nth-child(1) { height: 15px; animation-delay: 0s; }
+        .chest-bar-item:nth-child(2) { height: 25px; animation-delay: 0.2s; }
+        .chest-bar-item:nth-child(3) { height: 20px; animation-delay: 0.4s; }
+        .chest-bar-item:nth-child(4) { height: 30px; animation-delay: 0.1s; }
+        .chest-bar-item:nth-child(5) { height: 18px; animation-delay: 0.3s; }
+
+        .robot-torso-indicator {
+            display: flex;
+            gap: 6px;
+        }
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3A6EA5;
+        }
+        .indicator-dot:nth-child(1) { background: #00e5ff; box-shadow: 0 0 6px #00e5ff; animation: dotPulse 2s ease-in-out infinite 0s; }
+        .indicator-dot:nth-child(2) { animation: dotPulse 2s ease-in-out infinite 0.5s; }
+        .indicator-dot:nth-child(3) { animation: dotPulse 2s ease-in-out infinite 1s; }
+
+        /* Hip */
+        .robot-hip {
+            width: 90px;
+            height: 12px;
+            background: #162038;
+            border: 1.5px solid #3A6EA5;
+            border-radius: 4px;
+            animation: bodyFloat 3s ease-in-out infinite;
+        }
+
+        /* Legs */
+        .robot-legs {
+            display: flex;
+            gap: 10px;
+            animation: bodyFloat 3s ease-in-out infinite;
+        }
+        .robot-leg-foot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .robot-leg {
+            width: 30px;
+            height: 70px;
+            background: linear-gradient(180deg, #1E2A47, #162038);
+            border-radius: 6px;
+            border: 1.5px solid #3A6EA5;
+            box-shadow: 0 0 8px rgba(58, 110, 165, 0.3);
+        }
+        .robot-leg.left  { animation: legSwingLeft  3s ease-in-out infinite; transform-origin: top center; }
+        .robot-leg.right { animation: legSwingRight 3s ease-in-out infinite; transform-origin: top center; }
+        .robot-foot {
+            width: 38px;
+            height: 15px;
+            background: #1E2A47;
+            border-radius: 4px 4px 6px 6px;
+            border: 1.5px solid #3A6EA5;
+            margin-top: 2px;
+        }
+
+        /* ── Chat panel ── */
+        .chat-panel {
+            flex: 1;
+            background: #fff;
+            border: 1.5px solid #1E2A47;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(30, 42, 71, 0.15);
+            display: flex;
+            flex-direction: column;
+            max-height: 520px;
+        }
+        .chat-header {
+            background: #1E2A47;
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .chat-status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00e5ff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00e5ff;
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: #f9f9f9;
+        }
+        .chat-message {
+            max-width: 85%;
+            padding: 0.6rem 0.9rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .chat-message.bot {
+            background: #1E2A47;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-message.user {
+            background: #3A6EA5;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-typing {
+            display: none;
+            align-self: flex-start;
+            padding: 0.6rem 0.9rem;
+            background: #1E2A47;
+            border-radius: 12px;
+            border-bottom-left-radius: 4px;
+        }
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #00e5ff;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingBounce 1.2s ease-in-out infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        .quick-reply-chip {
+            background: #f2f2f2;
+            border: 1px solid #1E2A47;
+            color: #1E2A47;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+        .quick-reply-chip:hover {
+            background: #1E2A47;
+            color: white;
+        }
+        .chat-input-area {
+            display: flex;
+            border-top: 1.5px solid #1E2A47;
+            background: white;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .chat-send-btn {
+            width: auto;
+            margin: 0;
+            padding: 0.75rem 1.25rem;
+            background: #1E2A47;
+            color: white;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .chat-send-btn:hover { background: #3A6EA5; }
+
+        /* ── Animations ── */
+        @keyframes headBob {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-5px); }
+        }
+        @keyframes antennaPulse {
+            0%, 100% { opacity: 1;   box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff; }
+            50%       { opacity: 0.5; box-shadow: 0 0 5px #00e5ff; }
+        }
+        @keyframes eyeBlink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            93%           { transform: scaleY(0.1); }
+        }
+        @keyframes bodyFloat {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-4px); }
+        }
+        @keyframes armSwingLeft {
+            0%, 100% { transform: rotate(-5deg); }
+            50%       { transform: rotate(5deg); }
+        }
+        @keyframes armSwingRight {
+            0%, 100% { transform: rotate(5deg); }
+            50%       { transform: rotate(-5deg); }
+        }
+        @keyframes legSwingLeft {
+            0%, 100% { transform: rotate(3deg); }
+            50%       { transform: rotate(-3deg); }
+        }
+        @keyframes legSwingRight {
+            0%, 100% { transform: rotate(-3deg); }
+            50%       { transform: rotate(3deg); }
+        }
+        @keyframes barPulse {
+            0%, 100% { transform: scaleY(1);   background: #3A6EA5; }
+            50%       { transform: scaleY(0.4); background: #00e5ff; }
+        }
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30%           { transform: translateY(-8px); }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .robot-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .chat-panel {
+                width: 100%;
+                max-height: 420px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GPlus Elevator - AI Assistant</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="videos.html">Videos</a></li>
+            <li><a href="pictures.html">Gallery</a></li>
+            <li><a href="documents.html">Documents</a></li>
+            <li><a href="fabrication.html">Fabrication</a></li>
+            <li><a href="robot.html">AI Assistant</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="robot-intro">
+            <h2>Meet G-Bot &mdash; Your Elevator AI Assistant</h2>
+            <p>Ask G-Bot about elevator models, pricing, features, or anything about GPlus Elevator!</p>
+        </div>
+
+        <div class="robot-container">
+            <!-- ── Robot Model ── -->
+            <div class="robot-model">
+                <div class="robot-head">
+                    <div class="robot-eyes">
+                        <div class="robot-eye"></div>
+                        <div class="robot-eye"></div>
+                    </div>
+                    <div class="robot-mouth">
+                        <div class="robot-mouth-led active"></div>
+                        <div class="robot-mouth-led"></div>
+                        <div class="robot-mouth-led active"></div>
+                        <div class="robot-mouth-led"></div>
+                        <div class="robot-mouth-led active"></div>
+                        <div class="robot-mouth-led"></div>
+                        <div class="robot-mouth-led active"></div>
+                    </div>
+                </div>
+                <div class="robot-neck"></div>
+                <div class="robot-torso-wrapper">
+                    <div class="robot-arm left"></div>
+                    <div class="robot-torso">
+                        <div class="robot-chest-display">
+                            <div class="chest-bar">
+                                <div class="chest-bar-item"></div>
+                                <div class="chest-bar-item"></div>
+                                <div class="chest-bar-item"></div>
+                                <div class="chest-bar-item"></div>
+                                <div class="chest-bar-item"></div>
+                            </div>
+                        </div>
+                        <div class="robot-torso-indicator">
+                            <div class="indicator-dot"></div>
+                            <div class="indicator-dot"></div>
+                            <div class="indicator-dot"></div>
+                        </div>
+                    </div>
+                    <div class="robot-arm right"></div>
+                </div>
+                <div class="robot-hip"></div>
+                <div class="robot-legs">
+                    <div class="robot-leg-foot">
+                        <div class="robot-leg left"></div>
+                        <div class="robot-foot"></div>
+                    </div>
+                    <div class="robot-leg-foot">
+                        <div class="robot-leg right"></div>
+                        <div class="robot-foot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Chat Panel ── -->
+            <div class="chat-panel">
+                <div class="chat-header">
+                    <div class="chat-status-dot"></div>
+                    G-Bot &mdash; Elevator AI Assistant
+                </div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-typing" id="typingIndicator">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+                <div class="quick-replies" id="quickReplies"></div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput"
+                           placeholder="Ask me about elevators..." autocomplete="off" />
+                    <button class="chat-send-btn" id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 GPlus Elevator. All Rights Reserved.</p>
+        <p style="margin-top: 0.25rem; font-size: 0.9rem; color: #ccc;">
+            Contact us: <a href="tel:+919363613828" style="color: #ccc; text-decoration: none;">+91-9363613828</a>
+        </p>
+    </footer>
+
+    <script>
+    // ── Knowledge base ──────────────────────────────────────────────
+    const knowledge = {
+        greeting: [
+            "Hello! I'm G-Bot, GPlus Elevator's AI assistant. I can help you choose the perfect elevator, explain our models, or answer any questions. What would you like to know?",
+            "Hi there! I'm G-Bot — ready to help you find the ideal elevator solution. Ask me anything!"
+        ],
+        models: {
+            Classic: "The **Classic** model is our reliable, cost-effective elevator. Perfect for residential buildings (G+1 to G+3). Features include smooth ride quality, energy-efficient motor, and standard safety systems.",
+            Ultra: "The **Ultra** model is our premium elevator with enhanced ride quality, better finish materials, quieter operation, and superior safety features — ideal for those who want the very best."
+        },
+        sizes: {
+            "3x3":       "The **3×3 ft** cabin is our compact option, perfect for tight spaces. It supports Manual door type only, great for smaller residential buildings.",
+            "3.6x3.6":   "The **3.6×3.6 ft** cabin offers a comfortable ride space and is available with both Manual and Auto door types — our most popular size.",
+            "4x4":       "The **4×4 ft** cabin is our spacious option, accommodating more passengers comfortably. Available with both Manual and Auto doors."
+        },
+        doors: {
+            Manual: "**Manual swing doors** open and close by hand. They're durable, cost-effective, and very common in residential buildings. You can choose MS or SS in half-vision or full-vision styles.",
+            Auto:   "**Automatic sliding doors** open and close electronically for seamless convenience. Not available for the 3×3 cabin size."
+        },
+        enclosure: {
+            "ACP":            "**ACP (Aluminium Composite Panel)** is the most affordable enclosure option — durable, weather-resistant, and gives a clean modern look.",
+            "Glass (1 Side)": "**Glass (1 Side)** adds a premium feel with one transparent wall, letting passengers see out. Slightly higher cost than ACP.",
+            "Glass (2 Side)": "**Glass (2 Side)** provides a panoramic experience with two glass walls — the most premium look we offer."
+        },
+        location: {
+            Indoor:  "**Indoor** installation requires no weather surcharge and is suitable for buildings where the elevator shaft is protected from the elements.",
+            Outdoor: "**Outdoor** installation adds ₹40,000 to the base price for weatherproofing and additional protective measures."
+        },
+        floors: {
+            "G+1": "**G+1** — 2 stops (ground floor + 1 upper floor). Our most common configuration.",
+            "G+2": "**G+2** — 3 stops (ground floor + 2 upper floors).",
+            "G+3": "**G+3** — 4 stops (ground floor + 3 upper floors). Our maximum residential configuration."
+        },
+        accessories: "We offer these extra security accessories:\n\n• **RF Card LOP** — ₹10,000\n• **RF Card COP** — ₹15,000\n• **Fingerprint LOP** — ₹15,000\n• **Fingerprint COP** — ₹20,000\n\nLOP = at the landing; COP = inside the cabin.",
+        pricing: "Our base prices start from **₹5,00,000** for a G+1 Classic configuration. Prices vary by floors, size, model, door type, and enclosure. Use our **Price Calculator** on the Home page for an exact quote!",
+        amc: "**AMC (Annual Maintenance Contract)** keeps your elevator in top condition year-round.\n\n• **Basic AMC** — Routine inspections & minor repairs (₹8,000–₹20,000/year)\n• **Comprehensive AMC** — Parts replacement + priority service (₹30,000–₹65,000/year)\n\nPrices depend on your model, floor count, and door type.",
+        contact: "You can reach us at **+91-9363613828**. We're happy to arrange a site visit and provide a customised quotation.",
+        default: [
+            "That's a great question! You can ask me about our elevator **models**, **sizes**, **door types**, **enclosures**, **pricing**, or **AMC** plans.",
+            "I'm not sure I caught that. Try asking about 'Classic model', 'Auto doors', '3×3 size', 'pricing', or 'AMC'.",
+            "Hmm, I'm best at answering questions about GPlus Elevator products. Try asking about our models or pricing!"
+        ]
+    };
+
+    const quickReplySets = {
+        initial:     ["What models do you offer?", "Tell me about pricing", "What sizes are available?", "Contact info"],
+        afterModels: ["Classic vs Ultra?", "What size should I choose?", "Manual vs Auto doors?", "Calculate price"],
+        afterPricing:["Use Price Calculator", "Tell me about AMC", "What accessories are available?", "Contact us"],
+        afterSize:   ["Tell me about door types", "Difference in price?", "Which model fits my needs?"],
+        general:     ["Tell me about models", "Pricing info", "Door types", "AMC plans", "Contact info"]
+    };
+
+    let currentQuickReplySet = 'initial';
+    let mouthAnimTimer = null;
+
+    // ── Mouth talking animation ──────────────────────────────────────
+    function startMouthAnimation() {
+        clearTimeout(mouthAnimTimer);
+        const leds = document.querySelectorAll('.robot-mouth-led');
+        let tick = 0;
+        const interval = setInterval(() => {
+            leds.forEach((led, i) => led.classList.toggle('active', (i + tick) % 2 === 0));
+            tick++;
+        }, 180);
+        mouthAnimTimer = setTimeout(() => {
+            clearInterval(interval);
+            leds.forEach((led, i) => {
+                led.classList.toggle('active', i % 2 === 0);
+            });
+        }, 2000);
+    }
+
+    // ── Rule-based response engine ───────────────────────────────────
+    function getBotResponse(input) {
+        const t = input.toLowerCase().trim();
+
+        if (/^(hi|hello|hey|good\s*(morning|afternoon|evening))/.test(t)) {
+            currentQuickReplySet = 'afterModels';
+            return knowledge.greeting[Math.floor(Math.random() * knowledge.greeting.length)];
+        }
+        if (/classic/.test(t))  { currentQuickReplySet = 'afterModels'; return knowledge.models.Classic; }
+        if (/ultra/.test(t))    { currentQuickReplySet = 'afterModels'; return knowledge.models.Ultra; }
+        if (/model/.test(t))    {
+            currentQuickReplySet = 'afterModels';
+            return "We have two elevator models:\n\n• **Classic** — Reliable and cost-effective.\n• **Ultra** — Premium finish with superior ride quality.\n\nAsk me about either one!";
+        }
+        if (/3x3|3 ?x ?3/.test(t))     { currentQuickReplySet = 'afterSize'; return knowledge.sizes["3x3"]; }
+        if (/3\.6/.test(t))             { currentQuickReplySet = 'afterSize'; return knowledge.sizes["3.6x3.6"]; }
+        if (/4x4|4 ?x ?4/.test(t))     { currentQuickReplySet = 'afterSize'; return knowledge.sizes["4x4"]; }
+        if (/size|cabin|dimension/.test(t)) {
+            currentQuickReplySet = 'afterSize';
+            return "We offer 3 cabin sizes:\n\n• **3×3 ft** — Compact (Manual only)\n• **3.6×3.6 ft** — Standard\n• **4×4 ft** — Spacious\n\nWhich would you like to know more about?";
+        }
+        if (/manual|swing/.test(t)) return knowledge.doors.Manual;
+        if (/auto|sliding/.test(t)) return knowledge.doors.Auto;
+        if (/door/.test(t)) return "We offer two door types:\n\n• **Manual Swing Door** — Cost-effective, hand-operated\n• **Auto Sliding Door** — Electronic convenience (not for 3×3)\n\nWould you like details on either?";
+        if (/acp/.test(t))              return knowledge.enclosure["ACP"];
+        if (/1 ?side|one.?side/.test(t)) return knowledge.enclosure["Glass (1 Side)"];
+        if (/2 ?side|two.?side|panoram/.test(t)) return knowledge.enclosure["Glass (2 Side)"];
+        if (/enclosure|structure|material|glass/.test(t)) return "We offer 3 enclosure options:\n\n• **ACP** — Most affordable\n• **Glass (1 Side)** — Premium look\n• **Glass (2 Side)** — Panoramic feel";
+        if (/g\+?1/.test(t)) return knowledge.floors["G+1"];
+        if (/g\+?2/.test(t)) return knowledge.floors["G+2"];
+        if (/g\+?3/.test(t)) return knowledge.floors["G+3"];
+        if (/floor|stop|storey|story/.test(t)) return "We support G+1, G+2, and G+3 configurations (2–4 stops). Which floor count suits your building?";
+        if (/outdoor/.test(t)) return knowledge.location["Outdoor"];
+        if (/indoor/.test(t))  return knowledge.location["Indoor"];
+        if (/location|weather/.test(t)) return "We support Indoor and Outdoor installations. Outdoor adds ₹40,000 for weatherproofing. Which suits your building?";
+        if (/access(?:or(?:y|ies))?|rf|rfid|finger(?:print)?|security|biometric/.test(t)) {
+            currentQuickReplySet = 'afterPricing';
+            return knowledge.accessories;
+        }
+        if (/price|cost|rate|how much|₹|rupee|budget/.test(t)) {
+            currentQuickReplySet = 'afterPricing';
+            return knowledge.pricing;
+        }
+        if (/calculat|estimate|quote/.test(t)) {
+            currentQuickReplySet = 'afterPricing';
+            return knowledge.pricing + "\n\nClick **Home** in the navigation to open the Price Calculator.";
+        }
+        if (/amc|maintenance|annual|service/.test(t)) {
+            currentQuickReplySet = 'afterPricing';
+            return knowledge.amc;
+        }
+        if (/contact|phone|call|number|reach|visit/.test(t)) return knowledge.contact;
+        if (/compar|vs|versus|differ|better|recommend/.test(t)) {
+            currentQuickReplySet = 'afterModels';
+            return "Quick comparison:\n\n**Classic** — More affordable, reliable, standard features. Best for value-conscious buyers.\n\n**Ultra** — Premium finish, quieter motor, superior ride. Best for the finest experience.\n\nBoth support G+1–G+3 configurations.";
+        }
+
+        currentQuickReplySet = 'general';
+        return knowledge.default[Math.floor(Math.random() * knowledge.default.length)];
+    }
+
+    // ── UI helpers ───────────────────────────────────────────────────
+    function renderQuickReplies(setKey) {
+        const container = document.getElementById('quickReplies');
+        const replies = quickReplySets[setKey] || quickReplySets.general;
+        container.innerHTML = '';
+        replies.forEach(reply => {
+            const chip = document.createElement('button');
+            chip.className = 'quick-reply-chip';
+            chip.textContent = reply;
+            chip.addEventListener('click', () => {
+                addMessage(reply, 'user');
+                processAndRespond(reply);
+            });
+            container.appendChild(chip);
+        });
+    }
+
+    function addMessage(text, sender) {
+        const messagesDiv = document.getElementById('chatMessages');
+        const msg = document.createElement('div');
+        msg.className = `chat-message ${sender}`;
+        msg.innerHTML = text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+        messagesDiv.appendChild(msg);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function processAndRespond(input) {
+        const typingEl = document.getElementById('typingIndicator');
+        typingEl.style.display = 'flex';
+        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+
+        setTimeout(() => {
+            typingEl.style.display = 'none';
+            const response = getBotResponse(input);
+            addMessage(response, 'bot');
+            startMouthAnimation();
+            renderQuickReplies(currentQuickReplySet);
+        }, 700 + Math.random() * 500);
+    }
+
+    // ── Event listeners ──────────────────────────────────────────────
+    document.getElementById('sendBtn').addEventListener('click', () => {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        addMessage(text, 'user');
+        input.value = '';
+        processAndRespond(text);
+    });
+
+    document.getElementById('chatInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('sendBtn').click();
+    });
+
+    // ── Initial greeting ─────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            addMessage(knowledge.greeting[0], 'bot');
+            startMouthAnimation();
+            renderQuickReplies('initial');
+        }, 500);
+    });
+    </script>
+</body>
+</html>
