@@ -3,680 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Calculator – GPlus Elevator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Calculator</title>
     <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: auto;
-      background-color: #f9f9f9;
-      color: #333;
-      line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      animation: fadeIn 1s ease-in-out;
-    }
-    label {
-      font-weight: 600;
-      margin-top: 1rem;
-      display: block;
-      color: #1e2a47;
-      letter-spacing: 0.5px;
-      transition: color 0.3s ease;
-    }
-    select,
-    button {
-      width: 100%;
-      padding: 10px 12px;
-      margin-top: 6px;
-      border: 1.5px solid #1e2a47;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-family: 'Roboto', sans-serif;
-      color: #1e2a47;
-      background-color: #fff;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      box-shadow: none;
-    }
-    select:focus,
-    button:focus {
-      outline: none;
-      border-color: #3a6ea5;
-      box-shadow: 0 0 8px rgba(58, 110, 165, 0.5);
-    }
-    button {
-      background-color: #1e2a47;
-      color: white;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: background-color 0.3s ease, transform 0.2s ease-in-out;
-      margin-top: 2rem;
-    }
-    button:hover {
-      background-color: #3a6ea5;
-      transform: translateY(-3px);
-    }
-    #result {
-      margin-top: 2rem;
-      padding: 20px;
-      border: 1.5px solid #1e2a47;
-      background-color: #f2f2f2;
-      color: #1e2a47;
-      font-weight: 600;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(30, 42, 71, 0.1);
-      animation: fadeIn 1s ease-in-out;
-      text-align: left;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.4;
-    }
-    #door-container {
-      display: none;
-      margin-top: 0rem;
-    }
-    .dropdowns-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem 2rem;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      justify-content: center;
-    }
-    .dropdown-wrapper {
-      flex: 1 1 45%;
-      min-width: 280px;
-      box-sizing: border-box;
-    }
-    .required-dropdowns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem 2rem;
-      width: 100%;
-      border: 2px solid #1e2a47;
-      padding: 1rem;
-      border-radius: 8px;
-    }
-    #media-container {
-      display: none;
-      max-width: 900px;
-      margin: 1rem auto;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 4px 8px rgba(30, 42, 71, 0.1);
-      animation: fadeIn 1s ease-in-out;
-      gap: 1rem;
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-    }
-    #slide-column,
-    #video-column {
-      border: 1.5px solid #1e2a47;
-      border-radius: 8px;
-      padding: 0.75rem;
-      box-sizing: border-box;
-      background-color: #f2f2f2;
-      box-shadow: 0 2px 6px rgba(30, 42, 71, 0.05);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      overflow: auto;
-    }
-    #slide-column {
-      flex: 3;
-      justify-content: center;
-      align-items: center;
-    }
-    #slide-column iframe {
-      width: 100%;
-      height: 400px;
-      border-radius: 8px;
-      border: none;
-      object-fit: contain;
-    }
-    #video-column {
-      flex: 1;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    #video-column iframe {
-      width: 100%;
-      height: 250px;
-      border-radius: 8px;
-      border: none;
-    }
-    @media (max-width: 768px) {
-      .dropdowns-container {
-        flex-direction: column;
-        gap: 1rem 0;
-        max-width: 100%;
-      }
-      .dropdown-wrapper {
-        flex: 1 1 100%;
-        min-width: auto;
-      }
-      #preset-buttons-container {
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-      #preset-buttons-container button.preset-btn {
-        flex: 1 1 100%;
-        min-width: auto;
-      }
-      #media-container {
-        flex-direction: column;
-      }
-      #slide-column,
-      #video-column {
-        width: 100%;
-        flex: none;
-        max-height: none;
-      }
-      #slide-column iframe {
-        height: 250px;
-      }
-      #video-column iframe {
-        height: 200px;
-      }
-    }
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    #preset-buttons-container {
-      max-width: 900px;
-      margin: 1rem auto;
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    #preset-buttons-container button.preset-btn {
-      flex: 1 1 30%;
-      min-width: 150px;
-      padding: 10px 15px;
-      font-weight: 600;
-      font-family: 'Roboto', sans-serif;
-      cursor: pointer;
-      border-radius: 6px;
-      border: 1.5px solid #1e2a47;
-      box-shadow: none;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      background-color: #1e2a47;
-      color: white;
-      transition: background-color 0.3s ease, transform 0.2s ease-in-out;
-    }
-    #preset-buttons-container button.preset-btn:hover,
-    #preset-buttons-container button.preset-btn:focus {
-      background-color: #3a6ea5;
-      color: white;
-      outline: none;
-      transform: translateY(-3px);
-      box-shadow: none;
-    }
-    @keyframes highlightPulse {
-      0%, 100% {
-        box-shadow: 0 0 8px 2px #3a6ea5;
-        transform: translateY(0);
-      }
-      50% {
-        box-shadow: 0 0 12px 4px #3a6ea5;
-        transform: translateY(-3px);
-      }
-    }
-    #calculateBtn.highlight {
-      animation: highlightPulse 1.5s ease-in-out 3;
-    }
-    .highlight-pulse {
-      animation: highlightPulse 1.5s ease-in-out 3;
-      border-color: #ff0800 !important;
-      box-shadow: 0 0 8px 2px #d9534f !important;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .calculator {
+            background-color: #1e2a47;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(30, 42, 71, 0.4);
+            width: 320px;
+        }
+
+        .display {
+            background-color: #111c33;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .display .expression {
+            font-size: 0.9rem;
+            color: #8899bb;
+            min-height: 1.2em;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .display .current {
+            font-size: 2.4rem;
+            color: #ffffff;
+            font-weight: 300;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            padding: 18px 0;
+            cursor: pointer;
+            transition: transform 0.1s ease, filter 0.1s ease;
+            user-select: none;
+        }
+
+        button:active {
+            transform: scale(0.94);
+            filter: brightness(0.85);
+        }
+
+        .btn-number {
+            background-color: #2d3f66;
+            color: #ffffff;
+        }
+
+        .btn-number:hover {
+            background-color: #3a5080;
+        }
+
+        .btn-operator {
+            background-color: #3a6ea5;
+            color: #ffffff;
+        }
+
+        .btn-operator:hover {
+            background-color: #4a80bb;
+        }
+
+        .btn-operator.active {
+            background-color: #ffffff;
+            color: #3a6ea5;
+        }
+
+        .btn-equals {
+            background-color: #3a6ea5;
+            color: #ffffff;
+            grid-row: span 2;
+            font-size: 1.6rem;
+        }
+
+        .btn-equals:hover {
+            background-color: #4a80bb;
+        }
+
+        .btn-clear {
+            background-color: #c0392b;
+            color: #ffffff;
+        }
+
+        .btn-clear:hover {
+            background-color: #e04030;
+        }
+
+        .btn-utility {
+            background-color: #3d4f70;
+            color: #ccddff;
+            font-size: 1rem;
+        }
+
+        .btn-utility:hover {
+            background-color: #4e6090;
+        }
+
+        .btn-zero {
+            grid-column: span 2;
+            text-align: left;
+            padding-left: 22px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>GPlus Elevator</h1>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="calculator.html">Price Calculator</a></li>
-        </ul>
-    </nav>
-    <main>
-        <p class="intro-text">Elevator Price Calculator</p>
-        <div id="preset-buttons-container"></div>
-
-        <h3>Select the following:</h3>
-
-        <div class="dropdowns-container">
-          <div class="required-dropdowns">
-            <div class="dropdown-wrapper">
-              <label for="floors">Floors:</label>
-              <select id="floors">
-                <option value="">-- Select --</option>
-                <option value="G+1">G+1</option>
-                <option value="G+2">G+2</option>
-                <option value="G+3">G+3</option>
-              </select>
-            </div>
-            <div class="dropdown-wrapper">
-              <label for="size">Size:</label>
-              <select id="size">
-                <option value="">-- Select --</option>
-                <option value="3x3">3x3</option>
-                <option value="3.6x3.6">3.6x3.6</option>
-                <option value="4x4">4x4</option>
-              </select>
-            </div>
-            <div class="dropdown-wrapper">
-              <label for="model">Model:</label>
-              <select id="model">
-                <option value="">-- Select --</option>
-                <option value="Classic">Classic</option>
-                <option value="Ultra">Ultra</option>
-              </select>
-            </div>
-            <div class="dropdown-wrapper">
-              <label for="type">Door Type:</label>
-              <select id="type">
-                <option value="">-- Select --</option>
-                <option value="Manual">Manual</option>
-                <option value="Auto">Auto</option>
-              </select>
-            </div>
-            <div class="dropdown-wrapper">
-              <label for="doorMaterial">Structure Enclosure:</label>
-              <select id="doorMaterial">
-                <option value="">-- Select --</option>
-                <option value="ACP">ACP</option>
-                <option value="Glass (1 Side)">Glass (1 Side)</option>
-                <option value="Glass (2 Side)">Glass (2 Side)</option>
-              </select>
-            </div>
-            <div class="dropdown-wrapper">
-              <label for="location">Location:</label>
-              <select id="location">
-                <option value="">-- Select --</option>
-                <option value="Indoor">Indoor</option>
-                <option value="Outdoor">Outdoor</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="dropdown-wrapper" id="door-container">
-            <label for="door">Swing Door Type:</label>
-            <select id="door">
-              <option value="">None</option>
-              <option value="ms_half_vision">MS Half Vision</option>
-              <option value="ms_full_vision">MS Full Vision</option>
-              <option value="ss_half_vision">SS Half Vision</option>
-              <option value="ss_full_vision">SS Full Vision</option>
-            </select>
-          </div>
-
-          <div class="dropdown-wrapper">
-            <label for="additional">Extra Accessories:</label>
-            <select id="additional">
-              <option value="none">None</option>
-              <option value="rf_lop">RF (LOP) - ₹10,000</option>
-              <option value="rf_cop">RF (COP) - ₹15,000</option>
-              <option value="finger_lop">Fingerprint (LOP) - ₹15,000</option>
-              <option value="finger_cop">Fingerprint (COP) - ₹20,000</option>
-            </select>
-          </div>
-
-          <div class="dropdown-wrapper">
-            <label for="amc">AMC (Annual Maintenance Contract):</label>
-            <select id="amc">
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
-
-          <div class="dropdown-wrapper" id="amc-type-container" style="display: none;">
-            <label for="amc-type">AMC Type:</label>
-            <select id="amc-type">
-              <option value="Basic">Basic</option>
-              <option value="Comprehensive">Comprehensive</option>
-            </select>
-          </div>
+    <div class="calculator">
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="current" id="current">0</div>
         </div>
+        <div class="buttons">
+            <!-- Row 1 -->
+            <button class="btn-clear" onclick="clearAll()">AC</button>
+            <button class="btn-utility" onclick="toggleSign()">+/−</button>
+            <button class="btn-utility" onclick="percentage()">%</button>
+            <button class="btn-operator" id="op-/" onclick="setOperator('/')">÷</button>
 
-        <button id="calculateBtn">Calculate Price</button>
+            <!-- Row 2 -->
+            <button class="btn-number" onclick="inputDigit('7')">7</button>
+            <button class="btn-number" onclick="inputDigit('8')">8</button>
+            <button class="btn-number" onclick="inputDigit('9')">9</button>
+            <button class="btn-operator" id="op-*" onclick="setOperator('*')">×</button>
 
-        <div id="result" style="display: none; margin-top: 20px;"></div>
+            <!-- Row 3 -->
+            <button class="btn-number" onclick="inputDigit('4')">4</button>
+            <button class="btn-number" onclick="inputDigit('5')">5</button>
+            <button class="btn-number" onclick="inputDigit('6')">6</button>
+            <button class="btn-operator" id="op--" onclick="setOperator('-')">−</button>
 
-        <div id="media-container" style="display: none; margin-top: 20px;" aria-live="polite" aria-atomic="true" role="region">
-          <div id="slide-column" aria-label="Google Slide presentation"></div>
-          <div id="video-column" aria-label="Model videos"></div>
+            <!-- Row 4 -->
+            <button class="btn-number" onclick="inputDigit('1')">1</button>
+            <button class="btn-number" onclick="inputDigit('2')">2</button>
+            <button class="btn-number" onclick="inputDigit('3')">3</button>
+            <button class="btn-operator" id="op-+" onclick="setOperator('+')">+</button>
+
+            <!-- Row 5 -->
+            <button class="btn-number btn-zero" onclick="inputDigit('0')">0</button>
+            <button class="btn-number" onclick="inputDecimal()">.</button>
+            <button class="btn-equals" onclick="calculate()">=</button>
         </div>
-    </main>
-    <footer>
-        <p>&copy; 2025 GPlus Elevator. All Rights Reserved.</p>
-        <p style="margin-top: 0.25rem; font-size: 0.9rem; color: #ccc;">
-            Contact us: <a href="tel:+919363613828" style="color: #ccc; text-decoration: none;">+91-9363613828</a>
-        </p>
-    </footer>
+    </div>
 
     <script>
-    // Toggle AMC Type container visibility
-    const amcSelect = document.getElementById('amc');
-    const amcTypeContainer = document.getElementById('amc-type-container');
-    amcSelect.addEventListener('change', () => {
-      amcTypeContainer.style.display = amcSelect.value === 'yes' ? 'block' : 'none';
-    });
-    amcTypeContainer.style.display = amcSelect.value === 'yes' ? 'block' : 'none';
+        let currentValue = '0';
+        let previousValue = '';
+        let operator = null;
+        let waitingForOperand = false;
+        let justCalculated = false;
 
-    // Preset buttons data and creation
-    const presetButtonsData = [
-      { label: "Preset 1", floors: "G+1", size: "3x3", model: "Classic", doorType: "Manual", doorMaterial: "ACP", location: "Indoor" },
-      { label: "Preset 2", floors: "G+1", size: "3.6x3.6", model: "Classic", doorType: "Manual", doorMaterial: "ACP", location: "Indoor" },
-      { label: "Preset 3", floors: "G+1", size: "4x4", model: "Classic", doorType: "Manual", doorMaterial: "ACP", location: "Indoor" },
-      { label: "Preset 4", floors: "G+1", size: "4x4", model: "Classic", doorType: "Auto", doorMaterial: "ACP", location: "Indoor" },
-      { label: "Preset 5", floors: "G+1", size: "3.6x3.6", model: "Classic", doorType: "Auto", doorMaterial: "ACP", location: "Indoor" },
-    ];
-    const container = document.getElementById('preset-buttons-container');
-    presetButtonsData.forEach(preset => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'preset-btn';
-      btn.textContent = preset.label;
-      btn.addEventListener('click', () => {
-        document.getElementById('floors').value = preset.floors;
-        document.getElementById('size').value = preset.size;
-        document.getElementById('size').dispatchEvent(new Event('change'));
-        document.getElementById('model').value = preset.model;
-        document.getElementById('type').value = preset.doorType;
-        document.getElementById('type').dispatchEvent(new Event('change'));
-        document.getElementById('doorMaterial').value = preset.doorMaterial;
-        document.getElementById('location').value = preset.location;
-        const calculateBtn = document.getElementById('calculateBtn');
-        calculateBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        calculateBtn.classList.add('highlight');
-        setTimeout(() => calculateBtn.classList.remove('highlight'), 4500);
-      });
-      container.appendChild(btn);
-    });
+        const currentDisplay = document.getElementById('current');
+        const expressionDisplay = document.getElementById('expression');
 
-    // Pricing data
-    const prices = {
-      "G+1": {
-        "3x3": {
-          Classic: { Manual: { ACP: 500000, "Glass (1 Side)": 550000, "Glass (2 Side)": 580000 }, Auto: {} },
-          Ultra: { Manual: { ACP: 570000, "Glass (1 Side)": 620000, "Glass (2 Side)": 650000 }, Auto: {} },
-        },
-        "3.6x3.6": {
-          Classic: { Manual: { ACP: 540000, "Glass (1 Side)": 600000, "Glass (2 Side)": 630000 }, Auto: { ACP: 640000, "Glass (1 Side)": 700000, "Glass (2 Side)": 730000 } },
-          Ultra: { Manual: { ACP: 620000, "Glass (1 Side)": 680000, "Glass (2 Side)": 710000 }, Auto: { ACP: 720000, "Glass (1 Side)": 780000, "Glass (2 Side)": 810000 } },
-        },
-        "4x4": {
-          Classic: { Manual: { ACP: 570000, "Glass (1 Side)": 640000, "Glass (2 Side)": 670000 }, Auto: { ACP: 680000, "Glass (1 Side)": 750000, "Glass (2 Side)": 780000 } },
-          Ultra: { Manual: { ACP: 660000, "Glass (1 Side)": 730000, "Glass (2 Side)": 760000 }, Auto: { ACP: 770000, "Glass (1 Side)": 840000, "Glass (2 Side)": 870000 } },
-        },
-      },
-      "G+2": {
-        "3x3": {
-          Classic: { Manual: { ACP: 570000, "Glass (1 Side)": 650000, "Glass (2 Side)": 680000 }, Auto: {} },
-          Ultra: { Manual: { ACP: 640000, "Glass (1 Side)": 720000, "Glass (2 Side)": 750000 }, Auto: {} },
-        },
-        "3.6x3.6": {
-          Classic: { Manual: { ACP: 610000, "Glass (1 Side)": 700000, "Glass (2 Side)": 730000 }, Auto: { ACP: 700000, "Glass (1 Side)": 790000, "Glass (2 Side)": 820000 } },
-          Ultra: { Manual: { ACP: 610000, "Glass (1 Side)": 700000, "Glass (2 Side)": 730000 }, Auto: { ACP: 700000, "Glass (1 Side)": 790000, "Glass (2 Side)": 820000 } },
-        },
-        "4x4": {
-          Classic: { Manual: { ACP: 660000, "Glass (1 Side)": 760000, "Glass (2 Side)": 780000 }, Auto: { ACP: 750000, "Glass (1 Side)": 850000, "Glass (2 Side)": 870000 } },
-          Ultra: { Manual: { ACP: 750000, "Glass (1 Side)": 850000, "Glass (2 Side)": 870000 }, Auto: { ACP: 840000, "Glass (1 Side)": 940000, "Glass (2 Side)": 960000 } },
-        },
-      },
-      "G+3": {
-        "3x3": {
-          Classic: { Manual: { ACP: 670000, "Glass (1 Side)": 790000, "Glass (2 Side)": 830000 }, Auto: {} },
-          Ultra: { Manual: { ACP: 770000, "Glass (1 Side)": 890000, "Glass (2 Side)": 930000 }, Auto: {} },
-        },
-        "3.6x3.6": {
-          Classic: { Manual: { ACP: 710000, "Glass (1 Side)": 840000, "Glass (2 Side)": 880000 }, Auto: { ACP: 810000, "Glass (1 Side)": 940000, "Glass (2 Side)": 980000 } },
-          Ultra: { Manual: { ACP: 710000, "Glass (1 Side)": 840000, "Glass (2 Side)": 880000 }, Auto: { ACP: 810000, "Glass (1 Side)": 940000, "Glass (2 Side)": 980000 } },
-        },
-        "4x4": {
-          Classic: { Manual: { ACP: 770000, "Glass (1 Side)": 910000, "Glass (2 Side)": 960000 }, Auto: { ACP: 890000, "Glass (1 Side)": 1030000, "Glass (2 Side)": 1080000 } },
-          Ultra: { Manual: { ACP: 880000, "Glass (1 Side)": 1020000, "Glass (2 Side)": 1070000 }, Auto: { ACP: 1000000, "Glass (1 Side)": 1140000, "Glass (2 Side)": 1190000 } },
-        },
-      },
-    };
-
-    // Show/hide Swing Door Type container based on Door Type selection
-    const doorContainer = document.getElementById('door-container');
-    const typeSelect = document.getElementById('type');
-    const doorSelect = document.getElementById('door');
-    typeSelect.addEventListener('change', () => {
-      if (typeSelect.value === 'Manual') {
-        doorContainer.style.display = 'block';
-      } else {
-        doorContainer.style.display = 'none';
-        doorSelect.value = '';
-      }
-    });
-
-    // Restrict Door Type options based on Size
-    const sizeSelect = document.getElementById('size');
-    const originalTypeOptions = Array.from(typeSelect.options);
-    sizeSelect.addEventListener('change', () => {
-      typeSelect.innerHTML = '';
-      if (sizeSelect.value === '3x3') {
-        const manualOption = originalTypeOptions.find(opt => opt.value === 'Manual');
-        if (manualOption) typeSelect.appendChild(manualOption.cloneNode(true));
-        typeSelect.value = 'Manual';
-        doorContainer.style.display = 'block';
-        doorSelect.value = '';
-      } else {
-        originalTypeOptions.forEach(opt => typeSelect.appendChild(opt.cloneNode(true)));
-        typeSelect.value = '';
-        doorContainer.style.display = 'none';
-        doorSelect.value = '';
-      }
-    });
-
-    // AMC Prices
-    const amcPrices = {
-      Basic: {
-        Manual: { "G+1": { Classic: 8000, Ultra: 12000 }, "G+2": { Classic: 10000, Ultra: 15000 }, "G+3": { Classic: 12000, Ultra: 18000 } },
-        Auto: { "G+1": { Classic: 10000, Ultra: 14000 }, "G+2": { Classic: 12000, Ultra: 17000 }, "G+3": { Classic: 14000, Ultra: 20000 } }
-      },
-      Comprehensive: {
-        Manual: { "G+1": { Classic: 30000, Ultra: 35000 }, "G+2": { Classic: 40000, Ultra: 45000 }, "G+3": { Classic: 50000, Ultra: 55000 } },
-        Auto: { "G+1": { Classic: 40000, Ultra: 45000 }, "G+2": { Classic: 50000, Ultra: 55000 }, "G+3": { Classic: 60000, Ultra: 65000 } }
-      }
-    };
-
-    // Media data with Google Slide URLs and multiple videos
-    const mediaData = {
-      "3x3_Classic_Manual_ACP": {
-        slides: [
-          "https://docs.google.com/presentation/d/e/2PACX-1vSJd8Pq3-JSoCgDbhhev4Ue_6Ym6GXAStkGBGXKCEic_k-XSiEuC68i1jePp59GvUyZ_tAPIWs3f8wG/pubembed?start=false&loop=false&delayms=3000"
-        ],
-        videos: [
-          "https://www.youtube.com/embed/vYvDCgiDqk4",
-          "https://www.youtube.com/embed/vYvDCgiDqk4"
-        ]
-      },
-      "3.6x3.6_Classic_Manual_ACP": {
-        slides: [
-          "https://docs.google.com/presentation/d/e/2PACX-1vSJd8Pq3-JSoCgDbhhev4Ue_6Ym6GXAStkGBGXKCEic_k-XSiEuC68i1jePp59GvUyZ_tAPIWs3f8wG/pubembed?start=false&loop=false&delayms=3000"
-        ],
-        videos: [
-          "https://www.youtube.com/embed/vYvDCgiDqk4"
-        ]
-      },
-    };
-
-    // Calculate Price button event
-    document.getElementById('calculateBtn').addEventListener('click', () => {
-      const floorInput = document.getElementById('floors').value;
-      const size = document.getElementById('size').value;
-      const model = document.getElementById('model').value;
-      const type = document.getElementById('type').value;
-      const doorMaterial = document.getElementById('doorMaterial').value;
-      const location = document.getElementById('location').value;
-      const additional = document.getElementById('additional').value;
-      const door = doorSelect.value;
-      const amc = amcSelect.value.trim().toLowerCase();
-      const amcType = document.getElementById('amc-type').value;
-
-      const resultDiv = document.getElementById('result');
-      const requiredDropdownsContainer = document.querySelector('.required-dropdowns');
-      const mediaContainer = document.getElementById('media-container');
-      const slideColumn = document.getElementById('slide-column');
-      const videoColumn = document.getElementById('video-column');
-
-      // Validate required fields
-      const requiredFields = [
-        { id: 'floors', value: floorInput },
-        { id: 'size', value: size },
-        { id: 'model', value: model },
-        { id: 'type', value: type },
-        { id: 'doorMaterial', value: doorMaterial },
-        { id: 'location', value: location },
-      ];
-      const invalidFields = requiredFields.filter(field => !field.value);
-      if (invalidFields.length) {
-        resultDiv.style.display = 'block';
-        resultDiv.textContent = "❗ Please select all options.";
-        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        mediaContainer.style.display = 'none';
-        slideColumn.innerHTML = '';
-        videoColumn.innerHTML = '';
-        setTimeout(() => {
-          requiredDropdownsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          requiredDropdownsContainer.querySelectorAll('select').forEach(sel => sel.classList.remove('highlight-pulse'));
-          invalidFields.forEach(field => {
-            const selectElem = document.getElementById(field.id);
-            if (selectElem) {
-              selectElem.classList.add('highlight-pulse');
-              setTimeout(() => selectElem.classList.remove('highlight-pulse'), 4500);
+        function updateDisplay() {
+            let display = currentValue;
+            if (display.length > 12) {
+                display = parseFloat(currentValue).toPrecision(8);
             }
-          });
-        }, 750);
-        return;
-      }
-
-      // Base price lookup
-      const basePrice = prices?.[floorInput]?.[size]?.[model]?.[type]?.[doorMaterial];
-      if (basePrice === undefined) {
-        resultDiv.style.display = 'block';
-        resultDiv.textContent = "❌ Price not available for the selected configuration.";
-        mediaContainer.style.display = 'none';
-        slideColumn.innerHTML = '';
-        videoColumn.innerHTML = '';
-        return;
-      }
-
-      // Swing Door Cost
-      const doorCostMap = {
-        "": 0,
-        none: 0,
-        ms_half_vision: 15000,
-        ms_full_vision: 20000,
-        ss_half_vision: 25000,
-        ss_full_vision: 30000,
-      };
-      const swingDoorCost = type === "Manual" ? (doorCostMap[door] || 0) : 0;
-
-      // Indoor/Outdoor cost
-      const outdoorCost = location === "Outdoor" ? 40000 : 0;
-
-      // Extra Accessories cost
-      const accessoryCostMap = {
-        none: 0,
-        rf_lop: 10000,
-        rf_cop: 15000,
-        finger_lop: 15000,
-        finger_cop: 20000,
-      };
-      const additionalCost = accessoryCostMap[additional] || 0;
-
-      // Discount based on model and floor
-      const discounts = {
-        Classic: { "G+1": 5000, "G+2": 10000, "G+3": 15000 },
-        Ultra: { "G+1": 10000, "G+2": 15000, "G+3": 20000 }
-      };
-      const discount = discounts[model]?.[floorInput] || 0;
-
-      // AMC Cost (not included in total price)
-      const amcCost = amc === "yes" ? (amcPrices?.[amcType]?.[type]?.[floorInput]?.[model] || 0) : 0;
-
-      // Total additional costs
-      const totalAdditional = swingDoorCost + outdoorCost + additionalCost;
-
-      // Final price calculation (excluding AMC)
-      const totalPrice = basePrice + totalAdditional - discount;
-
-      // Display results
-      resultDiv.style.display = 'block';
-      resultDiv.innerHTML = `
-        ✅ <strong>Base Price</strong>: ₹${basePrice.toLocaleString("en-IN")}<br>
-        ✅ <strong>Swing Door Cost</strong>: ₹${swingDoorCost.toLocaleString("en-IN")}<br>
-        ✅ <strong>Indoor or Outdoor Cost</strong>: ₹${outdoorCost.toLocaleString("en-IN")}<br>
-        ✅ <strong>Extra Accessories Cost</strong>: ₹${additionalCost.toLocaleString("en-IN")}<br>
-        ➖ <i style="color: red;">Discount for Selected Model</i>: ₹${discount.toLocaleString("en-IN")}<br>
-        ➕ <strong>Total Additional Cost</strong>: ₹${totalAdditional.toLocaleString("en-IN")}<br>
-        💰 <strong>Final Price</strong>: ₹${totalPrice.toLocaleString("en-IN")}<br>
-        ${amc === "yes" ? `✅ <strong>AMC Cost (${amcType})</strong>: ₹${amcCost.toLocaleString("en-IN")}` : ''}
-      `;
-
-      // Prepare media key and lookup
-      const mediaKey = `${size}_${model}_${type}_${doorMaterial}`;
-      const media = mediaData[mediaKey];
-
-      // Clear previous media content
-      slideColumn.innerHTML = '';
-      videoColumn.innerHTML = '';
-
-      if (media) {
-        if (media.slides && media.slides.length > 0) {
-          media.slides.forEach((slideUrl, idx) => {
-            const slideIframe = document.createElement('iframe');
-            slideIframe.src = slideUrl;
-            slideIframe.title = `Google Slide presentation ${idx + 1}`;
-            slideIframe.allowFullscreen = true;
-            slideIframe.setAttribute('frameborder', '0');
-            slideIframe.style.marginBottom = '1rem';
-            slideColumn.appendChild(slideIframe);
-          });
+            currentDisplay.textContent = display;
         }
 
-        if (media.videos && media.videos.length > 0) {
-          media.videos.forEach((videoUrl, idx) => {
-            const iframe = document.createElement('iframe');
-            iframe.src = videoUrl;
-            iframe.title = `Model video ${idx + 1}`;
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            iframe.style.marginBottom = '1rem';
-            videoColumn.appendChild(iframe);
-          });
+        function clearAll() {
+            currentValue = '0';
+            previousValue = '';
+            operator = null;
+            waitingForOperand = false;
+            justCalculated = false;
+            expressionDisplay.textContent = '';
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+            updateDisplay();
         }
 
-        mediaContainer.style.display = 'flex';
-      } else {
-        mediaContainer.style.display = 'none';
-      }
+        function inputDigit(digit) {
+            if (justCalculated) {
+                currentValue = digit;
+                expressionDisplay.textContent = '';
+                justCalculated = false;
+            } else if (waitingForOperand) {
+                currentValue = digit;
+                waitingForOperand = false;
+            } else {
+                currentValue = currentValue === '0' ? digit : currentValue + digit;
+            }
+            updateDisplay();
+        }
 
-      resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+        function inputDecimal() {
+            if (justCalculated) {
+                currentValue = '0.';
+                justCalculated = false;
+                expressionDisplay.textContent = '';
+            } else if (waitingForOperand) {
+                currentValue = '0.';
+                waitingForOperand = false;
+            } else if (!currentValue.includes('.')) {
+                currentValue += '.';
+            }
+            updateDisplay();
+        }
+
+        function toggleSign() {
+            if (currentValue !== '0') {
+                currentValue = currentValue.startsWith('-')
+                    ? currentValue.slice(1)
+                    : '-' + currentValue;
+                updateDisplay();
+            }
+        }
+
+        function percentage() {
+            currentValue = String(parseFloat(currentValue) / 100);
+            updateDisplay();
+        }
+
+        function setOperator(op) {
+            if (operator && !waitingForOperand) {
+                calculate(true);
+            }
+
+            previousValue = currentValue;
+            operator = op;
+            waitingForOperand = true;
+            justCalculated = false;
+
+            const opSymbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+            expressionDisplay.textContent = `${previousValue} ${opSymbols[op]}`;
+
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+            document.getElementById(`op-${op}`)?.classList.add('active');
+        }
+
+        function calculate(chained = false) {
+            if (!operator || (!waitingForOperand && previousValue === '')) return;
+
+            const prev = parseFloat(previousValue);
+            const curr = parseFloat(currentValue);
+            const opSymbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+            let result;
+
+            switch (operator) {
+                case '+': result = prev + curr; break;
+                case '-': result = prev - curr; break;
+                case '*': result = prev * curr; break;
+                case '/':
+                    if (curr === 0) {
+                        currentValue = 'Error';
+                        expressionDisplay.textContent = '';
+                        operator = null;
+                        waitingForOperand = false;
+                        justCalculated = true;
+                        updateDisplay();
+                        document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+                        return;
+                    }
+                    result = prev / curr;
+                    break;
+            }
+
+            // Avoid floating point display issues
+            result = parseFloat(result.toPrecision(12));
+
+            if (!chained) {
+                expressionDisplay.textContent = `${previousValue} ${opSymbols[operator]} ${currentValue} =`;
+            }
+
+            currentValue = String(result);
+            operator = chained ? operator : null;
+            waitingForOperand = false;
+            justCalculated = !chained;
+
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+            updateDisplay();
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', e => {
+            if (e.key >= '0' && e.key <= '9') inputDigit(e.key);
+            else if (e.key === '.') inputDecimal();
+            else if (e.key === '+') setOperator('+');
+            else if (e.key === '-') setOperator('-');
+            else if (e.key === '*') setOperator('*');
+            else if (e.key === '/') { e.preventDefault(); setOperator('/'); }
+            else if (e.key === 'Enter' || e.key === '=') calculate();
+            else if (e.key === 'Escape') clearAll();
+            else if (e.key === 'Backspace') {
+                if (currentValue.length > 1) {
+                    currentValue = currentValue.slice(0, -1);
+                } else {
+                    currentValue = '0';
+                }
+                updateDisplay();
+            }
+        });
     </script>
 </body>
 </html>
