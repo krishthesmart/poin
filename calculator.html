@@ -12,133 +12,116 @@
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f9f9f9;
+            background: #000;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
         }
 
         .calculator {
-            background-color: #1e2a47;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 40px rgba(30, 42, 71, 0.4);
-            width: 320px;
+            width: 375px;
+            background: #000;
+            padding: 0 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
         }
 
+        /* Display */
         .display {
-            background-color: #111c33;
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
+            padding: 20px 12px 8px;
             text-align: right;
-            min-height: 90px;
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
         }
 
-        .display .expression {
-            font-size: 0.9rem;
-            color: #8899bb;
-            min-height: 1.2em;
+        .expression {
+            font-size: 1.1rem;
+            color: #888;
+            min-height: 1.4em;
             margin-bottom: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .display .current {
-            font-size: 2.4rem;
-            color: #ffffff;
-            font-weight: 300;
+        .current {
+            font-size: 5rem;
+            color: #fff;
+            font-weight: 200;
+            line-height: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            transition: font-size 0.1s ease;
         }
 
+        .current.shrink {
+            font-size: 3.2rem;
+        }
+
+        /* Button grid */
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
 
-        button {
+        .btn {
             border: none;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-family: 'Roboto', sans-serif;
-            font-weight: 500;
-            padding: 18px 0;
+            border-radius: 50%;
+            font-size: 1.75rem;
+            font-family: inherit;
+            font-weight: 400;
+            width: 100%;
+            aspect-ratio: 1;
             cursor: pointer;
-            transition: transform 0.1s ease, filter 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: filter 0.08s ease;
+            -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
-        button:active {
-            transform: scale(0.94);
-            filter: brightness(0.85);
+        .btn:active {
+            filter: brightness(1.5);
         }
 
-        .btn-number {
-            background-color: #2d3f66;
-            color: #ffffff;
+        /* Utility: AC, +/-, % */
+        .btn-utility {
+            background: #a5a5a5;
+            color: #000;
         }
 
-        .btn-number:hover {
-            background-color: #3a5080;
-        }
-
+        /* Operators: ÷ × − + = */
         .btn-operator {
-            background-color: #3a6ea5;
-            color: #ffffff;
-        }
-
-        .btn-operator:hover {
-            background-color: #4a80bb;
+            background: #ff9f0a;
+            color: #fff;
         }
 
         .btn-operator.active {
-            background-color: #ffffff;
-            color: #3a6ea5;
+            background: #fff;
+            color: #ff9f0a;
         }
 
-        .btn-equals {
-            background-color: #3a6ea5;
-            color: #ffffff;
-            grid-row: span 2;
-            font-size: 1.6rem;
+        /* Numbers */
+        .btn-number {
+            background: #333;
+            color: #fff;
         }
 
-        .btn-equals:hover {
-            background-color: #4a80bb;
-        }
-
-        .btn-clear {
-            background-color: #c0392b;
-            color: #ffffff;
-        }
-
-        .btn-clear:hover {
-            background-color: #e04030;
-        }
-
-        .btn-utility {
-            background-color: #3d4f70;
-            color: #ccddff;
-            font-size: 1rem;
-        }
-
-        .btn-utility:hover {
-            background-color: #4e6090;
-        }
-
+        /* Zero button spans 2 cols */
         .btn-zero {
             grid-column: span 2;
-            text-align: left;
-            padding-left: 22px;
+            border-radius: 50px;
+            aspect-ratio: unset;
+            justify-content: flex-start;
+            padding-left: 28px;
         }
     </style>
 </head>
@@ -150,33 +133,33 @@
         </div>
         <div class="buttons">
             <!-- Row 1 -->
-            <button class="btn-clear" onclick="clearAll()">AC</button>
-            <button class="btn-utility" onclick="toggleSign()">+/−</button>
-            <button class="btn-utility" onclick="percentage()">%</button>
-            <button class="btn-operator" id="op-/" onclick="setOperator('/')">÷</button>
+            <button class="btn btn-utility" id="btn-ac"  onclick="clearAll()">AC</button>
+            <button class="btn btn-utility"              onclick="toggleSign()">+/−</button>
+            <button class="btn btn-utility"              onclick="percentage()">%</button>
+            <button class="btn btn-operator" id="op-/"  onclick="setOperator('/')">÷</button>
 
             <!-- Row 2 -->
-            <button class="btn-number" onclick="inputDigit('7')">7</button>
-            <button class="btn-number" onclick="inputDigit('8')">8</button>
-            <button class="btn-number" onclick="inputDigit('9')">9</button>
-            <button class="btn-operator" id="op-*" onclick="setOperator('*')">×</button>
+            <button class="btn btn-number" onclick="inputDigit('7')">7</button>
+            <button class="btn btn-number" onclick="inputDigit('8')">8</button>
+            <button class="btn btn-number" onclick="inputDigit('9')">9</button>
+            <button class="btn btn-operator" id="op-*"  onclick="setOperator('*')">×</button>
 
             <!-- Row 3 -->
-            <button class="btn-number" onclick="inputDigit('4')">4</button>
-            <button class="btn-number" onclick="inputDigit('5')">5</button>
-            <button class="btn-number" onclick="inputDigit('6')">6</button>
-            <button class="btn-operator" id="op--" onclick="setOperator('-')">−</button>
+            <button class="btn btn-number" onclick="inputDigit('4')">4</button>
+            <button class="btn btn-number" onclick="inputDigit('5')">5</button>
+            <button class="btn btn-number" onclick="inputDigit('6')">6</button>
+            <button class="btn btn-operator" id="op--"  onclick="setOperator('-')">−</button>
 
             <!-- Row 4 -->
-            <button class="btn-number" onclick="inputDigit('1')">1</button>
-            <button class="btn-number" onclick="inputDigit('2')">2</button>
-            <button class="btn-number" onclick="inputDigit('3')">3</button>
-            <button class="btn-operator" id="op-+" onclick="setOperator('+')">+</button>
+            <button class="btn btn-number" onclick="inputDigit('1')">1</button>
+            <button class="btn btn-number" onclick="inputDigit('2')">2</button>
+            <button class="btn btn-number" onclick="inputDigit('3')">3</button>
+            <button class="btn btn-operator" id="op-+"  onclick="setOperator('+')">+</button>
 
             <!-- Row 5 -->
-            <button class="btn-number btn-zero" onclick="inputDigit('0')">0</button>
-            <button class="btn-number" onclick="inputDecimal()">.</button>
-            <button class="btn-equals" onclick="calculate()">=</button>
+            <button class="btn btn-number btn-zero" onclick="inputDigit('0')">0</button>
+            <button class="btn btn-number"          onclick="inputDecimal()">.</button>
+            <button class="btn btn-operator"        onclick="calculate()">=</button>
         </div>
     </div>
 
@@ -189,13 +172,17 @@
 
         const currentDisplay = document.getElementById('current');
         const expressionDisplay = document.getElementById('expression');
+        const acBtn = document.getElementById('btn-ac');
 
         function updateDisplay() {
             let display = currentValue;
-            if (display.length > 12) {
-                display = parseFloat(currentValue).toPrecision(8);
+            if (display !== 'Error' && display.replace('-', '').replace('.', '').length > 9) {
+                const num = parseFloat(currentValue);
+                display = parseFloat(num.toPrecision(9)).toString();
             }
             currentDisplay.textContent = display;
+            currentDisplay.classList.toggle('shrink', display.length > 9);
+            acBtn.textContent = (currentValue === '0' && !previousValue) ? 'AC' : 'C';
         }
 
         function clearAll() {
@@ -220,6 +207,7 @@
             } else {
                 currentValue = currentValue === '0' ? digit : currentValue + digit;
             }
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
             updateDisplay();
         }
 
@@ -234,11 +222,12 @@
             } else if (!currentValue.includes('.')) {
                 currentValue += '.';
             }
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
             updateDisplay();
         }
 
         function toggleSign() {
-            if (currentValue !== '0') {
+            if (currentValue !== '0' && currentValue !== 'Error') {
                 currentValue = currentValue.startsWith('-')
                     ? currentValue.slice(1)
                     : '-' + currentValue;
@@ -247,11 +236,13 @@
         }
 
         function percentage() {
+            if (currentValue === 'Error') return;
             currentValue = String(parseFloat(currentValue) / 100);
             updateDisplay();
         }
 
         function setOperator(op) {
+            if (currentValue === 'Error') return;
             if (operator && !waitingForOperand) {
                 calculate(true);
             }
@@ -266,10 +257,11 @@
 
             document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
             document.getElementById(`op-${op}`)?.classList.add('active');
+            updateDisplay();
         }
 
         function calculate(chained = false) {
-            if (!operator || (!waitingForOperand && previousValue === '')) return;
+            if (!operator || previousValue === '') return;
 
             const prev = parseFloat(previousValue);
             const curr = parseFloat(currentValue);
@@ -287,15 +279,14 @@
                         operator = null;
                         waitingForOperand = false;
                         justCalculated = true;
-                        updateDisplay();
                         document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+                        updateDisplay();
                         return;
                     }
                     result = prev / curr;
                     break;
             }
 
-            // Avoid floating point display issues
             result = parseFloat(result.toPrecision(12));
 
             if (!chained) {
@@ -322,8 +313,8 @@
             else if (e.key === 'Enter' || e.key === '=') calculate();
             else if (e.key === 'Escape') clearAll();
             else if (e.key === 'Backspace') {
-                if (currentValue.length > 1) {
-                    currentValue = currentValue.slice(0, -1);
+                if (currentValue.length > 1 && currentValue !== 'Error') {
+                    currentValue = currentValue.slice(0, -1) || '0';
                 } else {
                     currentValue = '0';
                 }
