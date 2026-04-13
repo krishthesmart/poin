@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPlus Elevator</title>
+    <title>Price Calculator – GPlus Elevator</title>
     <link rel="stylesheet" href="styles.css">
     <style>
     body {
@@ -245,7 +245,7 @@
       border-color: #ff0800 !important;
       box-shadow: 0 0 8px 2px #d9534f !important;
     }
-  </style>
+    </style>
 </head>
 <body>
     <header>
@@ -262,115 +262,114 @@
         </ul>
     </nav>
     <main>
-        <p class="intro-text">Welcome to GPlus Elevator.</p>
-    <div id="preset-buttons-container"></div>
+        <p class="intro-text">Elevator Price Calculator</p>
+        <div id="preset-buttons-container"></div>
 
-    <h3>Select the following:</h3>
+        <h3>Select the following:</h3>
 
-    <div class="dropdowns-container">
-      <div class="required-dropdowns">
-        <div class="dropdown-wrapper">
-          <label for="floors">Floors:</label>
-          <select id="floors">
-            <option value="">-- Select --</option>
-            <option value="G+1">G+1</option>
-            <option value="G+2">G+2</option>
-            <option value="G+3">G+3</option>
-          </select>
+        <div class="dropdowns-container">
+          <div class="required-dropdowns">
+            <div class="dropdown-wrapper">
+              <label for="floors">Floors:</label>
+              <select id="floors">
+                <option value="">-- Select --</option>
+                <option value="G+1">G+1</option>
+                <option value="G+2">G+2</option>
+                <option value="G+3">G+3</option>
+              </select>
+            </div>
+            <div class="dropdown-wrapper">
+              <label for="size">Size:</label>
+              <select id="size">
+                <option value="">-- Select --</option>
+                <option value="3x3">3x3</option>
+                <option value="3.6x3.6">3.6x3.6</option>
+                <option value="4x4">4x4</option>
+              </select>
+            </div>
+            <div class="dropdown-wrapper">
+              <label for="model">Model:</label>
+              <select id="model">
+                <option value="">-- Select --</option>
+                <option value="Classic">Classic</option>
+                <option value="Ultra">Ultra</option>
+              </select>
+            </div>
+            <div class="dropdown-wrapper">
+              <label for="type">Door Type:</label>
+              <select id="type">
+                <option value="">-- Select --</option>
+                <option value="Manual">Manual</option>
+                <option value="Auto">Auto</option>
+              </select>
+            </div>
+            <div class="dropdown-wrapper">
+              <label for="doorMaterial">Structure Enclosure:</label>
+              <select id="doorMaterial">
+                <option value="">-- Select --</option>
+                <option value="ACP">ACP</option>
+                <option value="Glass (1 Side)">Glass (1 Side)</option>
+                <option value="Glass (2 Side)">Glass (2 Side)</option>
+              </select>
+            </div>
+            <div class="dropdown-wrapper">
+              <label for="location">Location:</label>
+              <select id="location">
+                <option value="">-- Select --</option>
+                <option value="Indoor">Indoor</option>
+                <option value="Outdoor">Outdoor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="dropdown-wrapper" id="door-container">
+            <label for="door">Swing Door Type:</label>
+            <select id="door">
+              <option value="">None</option>
+              <option value="ms_half_vision">MS Half Vision</option>
+              <option value="ms_full_vision">MS Full Vision</option>
+              <option value="ss_half_vision">SS Half Vision</option>
+              <option value="ss_full_vision">SS Full Vision</option>
+            </select>
+          </div>
+
+          <div class="dropdown-wrapper">
+            <label for="additional">Extra Accessories:</label>
+            <select id="additional">
+              <option value="none">None</option>
+              <option value="rf_lop">RF (LOP) - ₹10,000</option>
+              <option value="rf_cop">RF (COP) - ₹15,000</option>
+              <option value="finger_lop">Fingerprint (LOP) - ₹15,000</option>
+              <option value="finger_cop">Fingerprint (COP) - ₹20,000</option>
+            </select>
+          </div>
+
+          <div class="dropdown-wrapper">
+            <label for="amc">AMC (Annual Maintenance Contract):</label>
+            <select id="amc">
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+
+          <div class="dropdown-wrapper" id="amc-type-container" style="display: none;">
+            <label for="amc-type">AMC Type:</label>
+            <select id="amc-type">
+              <option value="Basic">Basic</option>
+              <option value="Comprehensive">Comprehensive</option>
+            </select>
+          </div>
         </div>
-        <div class="dropdown-wrapper">
-          <label for="size">Size:</label>
-          <select id="size">
-            <option value="">-- Select --</option>
-            <option value="3x3">3x3</option>
-            <option value="3.6x3.6">3.6x3.6</option>
-            <option value="4x4">4x4</option>
-          </select>
+
+        <button id="calculateBtn">Calculate Price</button>
+
+        <div id="result" style="display: none; margin-top: 20px;"></div>
+
+        <div id="media-container" style="display: none; margin-top: 20px;" aria-live="polite" aria-atomic="true" role="region">
+          <div id="slide-column" aria-label="Google Slide presentation"></div>
+          <div id="video-column" aria-label="Model videos"></div>
         </div>
-        <div class="dropdown-wrapper">
-          <label for="model">Model:</label>
-          <select id="model">
-            <option value="">-- Select --</option>
-            <option value="Classic">Classic</option>
-            <option value="Ultra">Ultra</option>
-          </select>
-        </div>
-        <div class="dropdown-wrapper">
-          <label for="type">Door Type:</label>
-          <select id="type">
-            <option value="">-- Select --</option>
-            <option value="Manual">Manual</option>
-            <option value="Auto">Auto</option>
-          </select>
-        </div>
-        <div class="dropdown-wrapper">
-          <label for="doorMaterial">Structure Enclosure:</label>
-          <select id="doorMaterial">
-            <option value="">-- Select --</option>
-            <option value="ACP">ACP</option>
-            <option value="Glass (1 Side)">Glass (1 Side)</option>
-            <option value="Glass (2 Side)">Glass (2 Side)</option>
-          </select>
-        </div>
-        <div class="dropdown-wrapper">
-          <label for="location">Location:</label>
-          <select id="location">
-            <option value="">-- Select --</option>
-            <option value="Indoor">Indoor</option>
-            <option value="Outdoor">Outdoor</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="dropdown-wrapper" id="door-container">
-        <label for="door">Swing Door Type:</label>
-        <select id="door">
-          <option value="">None</option>
-          <option value="ms_half_vision">MS Half Vision</option>
-          <option value="ms_full_vision">MS Full Vision</option>
-          <option value="ss_half_vision">SS Half Vision</option>
-          <option value="ss_full_vision">SS Full Vision</option>
-        </select>
-      </div>
-
-      <div class="dropdown-wrapper">
-        <label for="additional">Extra Accessories:</label>
-        <select id="additional">
-          <option value="none">None</option>
-          <option value="rf_lop">RF (LOP) - ₹10,000</option>
-          <option value="rf_cop">RF (COP) - ₹15,000</option>
-          <option value="finger_lop">Fingerprint (LOP) - ₹15,000</option>
-          <option value="finger_cop">Fingerprint (COP) - ₹20,000</option>
-        </select>
-      </div>
-
-      <div class="dropdown-wrapper">
-        <label for="amc">AMC (Annual Maintenance Contract):</label>
-        <select id="amc">
-          <option value="no">No</option>
-          <option value="yes">Yes</option>
-        </select>
-      </div>
-
-      <div class="dropdown-wrapper" id="amc-type-container" style="display: none;">
-        <label for="amc-type">AMC Type:</label>
-        <select id="amc-type">
-          <option value="Basic">Basic</option>
-          <option value="Comprehensive">Comprehensive</option>
-        </select>
-      </div>
-    </div>
-
-    <button id="calculateBtn">Calculate Price</button>
-
-    <div id="result" style="display: none; margin-top: 20px;"></div>
-
-    <!-- Updated media container below result -->
-    <div id="media-container" style="display: none; margin-top: 20px;" aria-live="polite" aria-atomic="true" role="region">
-      <div id="slide-column" aria-label="Google Slide presentation"></div>
-      <div id="video-column" aria-label="Model videos"></div>
-    </div>
-  </main>
+    </main>
     <footer>
         <p>&copy; 2025 GPlus Elevator. All Rights Reserved.</p>
         <p style="margin-top: 0.25rem; font-size: 0.9rem; color: #ccc;">
@@ -508,7 +507,7 @@
       }
     };
 
-    // Updated media data with Google Slide URLs and multiple videos
+    // Media data with Google Slide URLs and multiple videos
     const mediaData = {
       "3x3_Classic_Manual_ACP": {
         slides: [
@@ -521,13 +520,12 @@
       },
       "3.6x3.6_Classic_Manual_ACP": {
         slides: [
-          "https://docs.google.com/presentation/d/e/2PACX-1vSJd8Pq3-JSoCgDbhhev4Ue_6Ym6GXAStkGBGXKCEic_k-XSiEuC68i1jePp59GvUyZ_tAPIWs3f8wG/pubembed?start=false&loop=false&delayms=3000",
-          ],
+          "https://docs.google.com/presentation/d/e/2PACX-1vSJd8Pq3-JSoCgDbhhev4Ue_6Ym6GXAStkGBGXKCEic_k-XSiEuC68i1jePp59GvUyZ_tAPIWs3f8wG/pubembed?start=false&loop=false&delayms=3000"
+        ],
         videos: [
           "https://www.youtube.com/embed/vYvDCgiDqk4"
         ]
       },
-      // Add more keys as needed for other combinations...
     };
 
     // Calculate Price button event
@@ -563,7 +561,7 @@
         resultDiv.style.display = 'block';
         resultDiv.textContent = "❗ Please select all options.";
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        mediaContainer.style.display = 'none'; // Hide media if validation fails
+        mediaContainer.style.display = 'none';
         slideColumn.innerHTML = '';
         videoColumn.innerHTML = '';
         setTimeout(() => {
@@ -585,7 +583,7 @@
       if (basePrice === undefined) {
         resultDiv.style.display = 'block';
         resultDiv.textContent = "❌ Price not available for the selected configuration.";
-        mediaContainer.style.display = 'none'; // Hide media if no price
+        mediaContainer.style.display = 'none';
         slideColumn.innerHTML = '';
         videoColumn.innerHTML = '';
         return;
@@ -653,20 +651,18 @@
       videoColumn.innerHTML = '';
 
       if (media) {
-      // Insert Google Slide iframes (multiple slides supported)
-      if (media.slides && media.slides.length > 0) {
-        media.slides.forEach((slideUrl, idx) => {
-          const slideIframe = document.createElement('iframe');
-          slideIframe.src = slideUrl;
-          slideIframe.title = `Google Slide presentation ${idx + 1}`;
-          slideIframe.allowFullscreen = true;
-          slideIframe.setAttribute('frameborder', '0');
-          slideIframe.style.marginBottom = '1rem';
-          slideColumn.appendChild(slideIframe);
-        });
-      }
+        if (media.slides && media.slides.length > 0) {
+          media.slides.forEach((slideUrl, idx) => {
+            const slideIframe = document.createElement('iframe');
+            slideIframe.src = slideUrl;
+            slideIframe.title = `Google Slide presentation ${idx + 1}`;
+            slideIframe.allowFullscreen = true;
+            slideIframe.setAttribute('frameborder', '0');
+            slideIframe.style.marginBottom = '1rem';
+            slideColumn.appendChild(slideIframe);
+          });
+        }
 
-        // Insert videos dynamically (any number)
         if (media.videos && media.videos.length > 0) {
           media.videos.forEach((videoUrl, idx) => {
             const iframe = document.createElement('iframe');
@@ -681,13 +677,11 @@
 
         mediaContainer.style.display = 'flex';
       } else {
-        // Hide media container if no media found
         mediaContainer.style.display = 'none';
       }
 
-      // Scroll to the result div smoothly
       resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  </script>
+    </script>
 </body>
 </html>
